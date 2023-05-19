@@ -1,84 +1,143 @@
-import java.util.Scanner;  
-  
-//create ATMExample class to implement the ATM functionality  
-public class atm 
-{  
-    //main method starts   
-    public static void main(String args[] )  
-    {  
-        //declare and initialize balance, withdraw, and deposit  
-        int balance = 0, withdraw, deposit;  
-        
-          
-        //create scanner class object to get choice of user  
-        Scanner sc = new Scanner(System.in); 
-        System.out.println("Enter your ATM Number: \n"); 
-        String atmNo=sc.nextLine();
-        System.out.println("Enter your ATM Pin: \n");
-        int atmPin=sc.nextInt();
-        
-          
-        while(true)  
-        {  
-            System.out.println("ATM");  
-            System.out.println("Choose 1 for Withdraw");  
-            System.out.println("Choose 2 for Deposit");  
-            System.out.println("Choose 3 for Check Balance");  
-            System.out.println("Choose 4 for EXIT");  
-            System.out.print("Choose the operation you want to perform:");  
-              
-            //get choice from user  
-            int choice = sc.nextInt();  
-            switch(choice)  
-            {  
-                case 1:  
-        System.out.print("Enter money to be withdrawn:");  
-                      
-        //get the withdrawl money from user  
-        withdraw = sc.nextInt();  
-                      
-        //check whether the balance is greater than or equal to the withdrawal amount  
-        if(balance >= withdraw)  
-        {  
-            //remove the withdrawl amount from the total balance  
-            balance = balance - withdraw;  
-            System.out.println("Please collect your money");  
-        }  
-        else  
-        {  
-            //show custom error message   
-            System.out.println("Insufficient Balance");  
-        }  
-        System.out.println("");  
-        break;  
-   
-                case 2:  
-                      
-        System.out.print("Enter money to be deposited:");  
-                      
-        //get deposite amount from te user  
-        deposit = sc.nextInt();  
-                      
-        //add the deposit amount to the total balanace  
-        balance = balance + deposit;  
-        System.out.println("Your Money has been successfully depsited");  
-        System.out.println("");  
-        break;  
-   
-                case 3:  
-        //displaying the total balance of the user  
-        System.out.println("Balance : "+balance);  
-        System.out.println("");  
-        break;  
-   
-                case 4:  
-        //exit from the menu  
-        System.exit(0);  
+import java.util.*;
 
-        default:
-        System.out.println("Choose a correct option from these four !\n");
-        break;
-            }  
-        }  
-    }  
+
+public class ATM {
+    static Scanner sc = new Scanner(System.in);
+    static ArrayList<String> history = new ArrayList<String>();
+
+    static int balance = 50000;
+
+    static String userid = "abcd123";
+    static int userpin = 2245;
+
+
+    public static void main(String[] args) {
+
+        System.out.println("===================");
+        System.out.println("Welcome to the ATM");
+        System.out.println("===================");
+
+
+        while (true) {
+            System.out.println("Enter your userid");
+            String u = sc.next();
+            System.out.println("Enter your pin");
+            int p = sc.nextInt();
+            if (validate(u, p)) {
+                System.out.println("Successfully Logged In");
+                System.out.println();
+                displayscreen();
+                break;
+            }
+        }
+    }
+    public static boolean validate(String user, int pin) {
+        if (user.equals(userid)) {
+            if (pin == userpin)
+                return true;
+            else {
+                System.out.println("Enter correct pin");
+                return false;
+            }
+        } else {
+            System.out.println("Enter correct userid");
+            return false;
+        }
+    }
+
+    public static void displayscreen() {
+
+        while (true) {
+
+            System.out.println("1. Transaction History");
+            System.out.println("2. Withdraw");
+            System.out.println("3. Deposit");
+            System.out.println("4. Transfer");
+            System.out.println("5. Exit");
+
+            System.out.println("Enter your choice");
+            int c = sc.nextInt();
+
+            switch (c) {
+                case 1:
+                    System.out.println("Transaction History");
+                    transferHistory();
+                    System.out.println();
+                    break;
+                case 2:
+                    System.out.println("Enter amount to be withdrawn");
+                    int amt = sc.nextInt();
+                    withdraw(amt);
+                    System.out.println();
+                    break;
+
+                case 3:
+                    System.out.println("Enter amount to be deposited");
+                    int a = sc.nextInt();
+                    balance += a;
+                    history.add("Deposited " + a);
+                    System.out.println("Amount deposited successfully");
+                    System.out.println("Balance = " + balance);
+                    System.out.println();
+                    break;
+
+                case 4:
+                    System.out.println("Enter account number of the person to transfer the amount");
+                    int acc = sc.nextInt();
+                    System.out.println("Enter amount to be transferred");
+                    int amount = sc.nextInt();
+                    transfer(amount, acc);
+                    System.out.println();
+                    break;
+
+                case 5:
+                    System.out.println("Thank you for using the service");
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.println("Enter correct choice");
+                    break;
+            }
+        }
+    }
+
+    public static void withdraw(int amount) {
+
+        if (balance < amount) {
+            System.out.println("Insufficient Balance");
+            return;
+        } else {
+            balance = balance - amount;
+            System.out.println("Remaining Balance = " + balance);
+            System.out.println("Collect your amount");
+            history.add("Withdrawn " + amount);
+            return;
+        }
+    }
+
+    public static void transfer(int amt, int account) {
+
+        if (balance < amt) {
+            System.out.println("Insufficient Balance");
+            return;
+        } else {
+            balance = balance - amt;
+            System.out.println("Remaining Balance = " + balance);
+            System.out.println("Amount Transferred to this account " + account + " successfully");
+            history.add("Transferred to the account " + account + " a amount of " + amt);
+            return;
+        }
+    }
+    public static void transferHistory(){
+        if(history.size() == 0) {
+            System.out.println("No transaction in this session");
+            return;
+        }
+        for (int i=0;i<history.size();i++)
+        {
+            System.out.println(history.get(i));
+        }
+        return;
+    }
 }
